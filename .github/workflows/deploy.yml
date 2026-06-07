@@ -32,10 +32,9 @@ jobs:
       - name: Install cert-manager
         run: |
           kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.14.5/cert-manager.yaml
-          kubectl wait --namespace cert-manager \
-            --for=condition=ready pod \
-            --selector=app.kubernetes.io/instance=cert-manager \
-            --timeout=120s
+          kubectl rollout status deployment/cert-manager -n cert-manager --timeout=120s
+          kubectl rollout status deployment/cert-manager-webhook -n cert-manager --timeout=120s
+          kubectl rollout status deployment/cert-manager-cainjector -n cert-manager --timeout=120s
 
       - name: Apply nginx hardening
         run: kubectl apply -f demo-app/nginx-hardening.yaml
